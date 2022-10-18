@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\BlizzardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CacheController;
+use App\Http\Controllers\BlizzardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,4 +15,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::get('/', [BlizzardController::class, 'index']);
- 
+// Route::get('/test', [BlizzardController::class, 'cached']);

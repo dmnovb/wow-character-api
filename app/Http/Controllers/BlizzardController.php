@@ -7,6 +7,7 @@ use App\classes\Character;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 
 class BlizzardController extends Controller
 {
@@ -19,7 +20,7 @@ class BlizzardController extends Controller
         $class = $json_object['playable_class']['name']; 
         $spec = $json_object['active_spec']['name'];
         $char_level = $summary['level'];
-        $char_image= $media['assets'][2]['value'];
+        $char_image= $media['assets'][3]['value'];
         $char_average_item_level = $summary['average_item_level'];
     
         $itemsArray = array();
