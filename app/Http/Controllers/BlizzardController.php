@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Http;
 class BlizzardController extends Controller
 {
 
-    private function getCharacterSummary($summary, $json_object, $media, $character_items){
+    private function getCharacterSummary($summary, $json_object, $media, $character_items, $item_pictures){
         $character = new Character;
  
         $name = $json_object['character']['name'];
@@ -23,14 +23,18 @@ class BlizzardController extends Controller
         $char_average_item_level = $summary['average_item_level'];
     
         $itemsArray = array();
- 
+        
+
         for($i = 0; $i < count($character_items['equipped_items']); $i++){
             $itemlvl = $character_items['equipped_items'][$i]['level']['display_string'];
             $itemName = $character_items['equipped_items'][$i]['name'];
-             
+            
+            
+
             $item = new Item();
             $item->item_level = $itemlvl;
             $item->name = $itemName;
+            $item->item_url = $item_pictures[$i];
 
             array_push($itemsArray, $item);
         }
@@ -71,16 +75,32 @@ class BlizzardController extends Controller
        $json_media =  json_decode($char_media->wait(), true);
 
        $char_items = Http::async()->get('https://eu.api.blizzard.com/profile/wow/character/tarren-mill/frizera/equipment?namespace=profile-eu&locale=en_US&access_token=EUNuUo1bVhERA9Mc4IklQ7hoqB5a7ZJ4Jm')
-       ->then(function ($response) {
-           return $response;
-       }); 
+                                    ->then(function ($response) {
+                                        return $response;
+                                    }); 
 
         $json_items =  json_decode($char_items->wait(), true);
+        
+        $items_id = [];
+        for($i = 0; $i < count($json_items['equipped_items']); $i++){
+            $item_id = $json_items['equipped_items'][$i]['item']['id'];
 
+            array_push($items_id, $item_id);
+        }
+
+        $items_jpg = [];
+        for($i = 0; $i < count($items_id); $i++){
+            $item_media_summary = Http::async()->get('https://us.api.blizzard.com/data/wow/media/item/' . $items_id[$i] . '?namespace=static-us&locale=en_US&access_token=EUNuUo1bVhERA9Mc4IklQ7hoqB5a7ZJ4Jm')
+            ->then(function ($response) {
+                return $response;
+            }); 
+            $item_media =  json_decode($item_media_summary->wait(), true);
+            array_push($items_jpg, $item_media['assets'][0]['value']);
+        }
 
 
         return view('main', [
-            'profile_summary' => $this->getCharacterSummary($json_summary,$json, $json_media, $json_items)
+            'profile_summary' => $this->getCharacterSummary($json_summary,$json, $json_media, $json_items, $items_jpg)
         ]);
     }
 }

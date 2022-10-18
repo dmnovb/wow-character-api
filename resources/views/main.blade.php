@@ -15,30 +15,28 @@
         <h1>{{$profile_summary->average_item_level}}ILVL</h1>
         <h2>{{$profile_summary->name}}</h2>
         <p> {{$profile_summary->level}} {{$profile_summary->race}} {{$profile_summary->specialization}} {{$profile_summary->playable_class}}</p>
-        {{-- @foreach ($profile_summary->weapons as $weapon)
-            <p>{{$weapon}}</p>
-        @endforeach --}}
-        {{-- <div class="items">
-            @foreach ($profile_summary->items as $item)
-            <p>{{$item['name']}}</p>
-            @endforeach
-         </div> --}}
-        <div class="item_level">
-            {{-- @foreach ($profile_summary->item_level as $item_level)
-            <p>{{$item_level}}</p>
-            @endforeach --}}
-            @for ($i = 0; $i < count($profile_summary->items) / 2; $i++)
+        
+        <div class="items" style="">
+            <div class="items-left" style="background-color: rgba(255, 187, 60, 0.88);
+            float: left;
+            ">
+                @for ($i = 0; $i < count($profile_summary->items) / 2; $i++)
+                <img src="{{$profile_summary->items[$i]->item_url}}">    
                 <p>{{$profile_summary->items[$i]->name}}</p>
-            @endfor
-
-            @for ($i = count($profile_summary->items) / 2; $i < count($profile_summary->items) ; $i++)
+                @endfor
+            </div>
+            <div class="items-right" style="background-color:rgb(0, 255, 242);
+            float: right;
+            ">
+                @for ($i = count($profile_summary->items) / 2; $i < count($profile_summary->items) ; $i++)
+                <img src="{{$profile_summary->items[$i]->item_url}}">     
                 <p>{{$profile_summary->items[$i]->name}}</p>
-            @endfor
-         
+                @endfor       
+            </div>
         </div>
-        <img style="width: 100%;
-                    position:absolute;
+        <img style="width: 25%;
                     justify-content: center;
+                    position:center;
         "
         src="{{$profile_summary->image}}">
         
