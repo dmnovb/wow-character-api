@@ -13,14 +13,5 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-// Route::get('/', function () {
-
-//     return view('main');
-// });
-
 Route::get('/', [BlizzardController::class, 'index']);
-Route::get('/test', [BlizzardController::class, 'bobi']);
-// Route::get('/asd', function () {
-//     return view('greeting', ['name' => 'James']);
-// });
+ 
