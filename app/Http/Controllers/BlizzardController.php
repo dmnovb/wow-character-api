@@ -14,7 +14,7 @@ class BlizzardController extends Controller
 
     private function getCharacterSummary($summary, $json_object, $media, $character_items, $item_pictures){
         $character = new Character;
- 
+        
         $name = $json_object['character']['name'];
         $race = $json_object['playable_race']['name'];  
         $class = $json_object['playable_class']['name']; 
@@ -22,8 +22,9 @@ class BlizzardController extends Controller
         $char_level = $summary['level'];
         $char_image= $media['assets'][3]['value'];
         $char_average_item_level = $summary['average_item_level'];
-    
+        
         $itemsArray = array();
+        // dd($character_items);
         
 
         for($i = 0; $i < count($character_items['equipped_items']); $i++){
@@ -54,34 +55,33 @@ class BlizzardController extends Controller
 
 
     public function index(){
-        $promise = Http::async()->get('https://eu.api.blizzard.com/profile/wow/character/tarren-mill/frizera/appearance?namespace=profile-eu&locale=en_US&access_token=EUNuUo1bVhERA9Mc4IklQ7hoqB5a7ZJ4Jm')
+        $promise = Http::async()->get('https://eu.api.blizzard.com/profile/wow/character/tarren-mill/snoozeww/appearance?namespace=profile-eu&locale=en_US&access_token=EUuO2iGxdgAxnLOAycgC67UaDE6G4igjwg')
                                 ->then(function ($response) {
                                     return $response;
                                 }); 
 
        $json =  json_decode($promise->wait(), true);
 
-        $character_profile_summary = Http::async()->get('https://eu.api.blizzard.com/profile/wow/character/tarren-mill/frizera?namespace=profile-eu&locale=en_EU&access_token=EUNuUo1bVhERA9Mc4IklQ7hoqB5a7ZJ4Jm')
+        $character_profile_summary = Http::async()->get('https://eu.api.blizzard.com/profile/wow/character/tarren-mill/snoozeww?namespace=profile-eu&locale=en_EU&access_token=EUuO2iGxdgAxnLOAycgC67UaDE6G4igjwg')
                                 ->then(function ($response) {
                                     return $response;
                                 }); 
 
        $json_summary =  json_decode($character_profile_summary->wait(), true);
 
-       $char_media = Http::async()->get('https://eu.api.blizzard.com/profile/wow/character/tarren-mill/frizera/character-media?namespace=profile-eu&locale=en_EU&access_token=EUNuUo1bVhERA9Mc4IklQ7hoqB5a7ZJ4Jm')
+       $char_media = Http::async()->get('https://eu.api.blizzard.com/profile/wow/character/tarren-mill/snoozeww/character-media?namespace=profile-eu&locale=en_US&access_token=EUuO2iGxdgAxnLOAycgC67UaDE6G4igjwg')
                                 ->then(function ($response) {
                                     return $response;
                                 }); 
 
        $json_media =  json_decode($char_media->wait(), true);
 
-       $char_items = Http::async()->get('https://eu.api.blizzard.com/profile/wow/character/tarren-mill/frizera/equipment?namespace=profile-eu&locale=en_US&access_token=EUNuUo1bVhERA9Mc4IklQ7hoqB5a7ZJ4Jm')
+       $char_items = Http::async()->get('https://eu.api.blizzard.com/profile/wow/character/tarren-mill/snoozeww/equipment?namespace=profile-eu&locale=en_US&access_token=EUuO2iGxdgAxnLOAycgC67UaDE6G4igjwg')
                                     ->then(function ($response) {
                                         return $response;
                                     }); 
 
-        $json_items =  json_decode($char_items->wait(), true);
-        
+        $json_items =  json_decode($char_items->wait(), true);                        
         $items_id = [];
         for($i = 0; $i < count($json_items['equipped_items']); $i++){
             $item_id = $json_items['equipped_items'][$i]['item']['id'];
@@ -91,14 +91,13 @@ class BlizzardController extends Controller
 
         $items_jpg = [];
         for($i = 0; $i < count($items_id); $i++){
-            $item_media_summary = Http::async()->get('https://us.api.blizzard.com/data/wow/media/item/' . $items_id[$i] . '?namespace=static-us&locale=en_US&access_token=EUNuUo1bVhERA9Mc4IklQ7hoqB5a7ZJ4Jm')
+            $item_media_summary = Http::async()->get('https://eu.api.blizzard.com/data/wow/media/item/' . $items_id[$i] . '?namespace=static-eu&locale=en_EU&access_token=EUuO2iGxdgAxnLOAycgC67UaDE6G4igjwg')
             ->then(function ($response) {
                 return $response;
             }); 
             $item_media =  json_decode($item_media_summary->wait(), true);
             array_push($items_jpg, $item_media['assets'][0]['value']);
         }
-
 
         return view('main', [
             'profile_summary' => $this->getCharacterSummary($json_summary,$json, $json_media, $json_items, $items_jpg)
